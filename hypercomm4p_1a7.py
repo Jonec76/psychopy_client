@@ -762,6 +762,8 @@ for r in range(runNum):
         languageStyle='LTR',
         depth=0.0);
 
+
+
     # store frame rate of monitor if we can measure it
     expInfo['frameRate'] = win.getActualFrameRate()
     if expInfo['frameRate'] != None:
@@ -778,6 +780,11 @@ for r in range(runNum):
     WelcomeScreenClock.reset()  # clock
     frameN = -1
     continueRoutine = True
+    #    ===================(remove)
+    continueRoutine = False
+    #    ===================
+    
+    
     # update component parameters for each repeat
     key_welcome = event.BuilderKeyResponse()
 
@@ -896,53 +903,53 @@ for r in range(runNum):
     countDownClock.reset()  # clock
     frameN = -1
     continueRoutine = True
-    routineTimer.add(5.000000)
+    routineTimer.add(1.000000)
     # update component parameters for each repeat
-    countT = 5
+    countT = 1
     # keep track of which components have finished
     countDownComponents = [textCountDown]
     for thisComponent in countDownComponents:
         if hasattr(thisComponent, 'status'):
             thisComponent.status = NOT_STARTED
     
-    # -------Start Routine "countDown"-------
-    while continueRoutine and routineTimer.getTime() > 0:
-        # get current time
-        t = countDownClock.getTime()
-        frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-        # update/draw components on each frame
+    # -------Start Routine "countDown"-------(close)
+    # while continueRoutine and routineTimer.getTime() > 0:
+    #     # get current time
+    #     t = countDownClock.getTime()
+    #     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+    #     # update/draw components on each frame
         
-        # *textCountDown* updates
-        if t >= 0.0 and textCountDown.status == NOT_STARTED:
-            # keep track of start time/frame for later
-            textCountDown.tStart = t
-            textCountDown.frameNStart = frameN  # exact frame index
-            textCountDown.setAutoDraw(True)
-        frameRemains = 0.0 + 5- win.monitorFramePeriod * 0.75  # most of one frame period left
-        if textCountDown.status == STARTED and t >= frameRemains:
-            textCountDown.setAutoDraw(False)
-        if textCountDown.status == STARTED:  # only update if drawing
-            textCountDown.setText(countT, log=False)
+    #     # *textCountDown* updates
+    #     if t >= 0.0 and textCountDown.status == NOT_STARTED:
+    #         # keep track of start time/frame for later
+    #         textCountDown.tStart = t
+    #         textCountDown.frameNStart = frameN  # exact frame index
+    #         textCountDown.setAutoDraw(True)
+    #     frameRemains = 0.0 + 5- win.monitorFramePeriod * 0.75  # most of one frame period left
+    #     if textCountDown.status == STARTED and t >= frameRemains:
+    #         textCountDown.setAutoDraw(False)
+    #     if textCountDown.status == STARTED:  # only update if drawing
+    #         textCountDown.setText(countT, log=False)
 
-        time.sleep(0.9)
-        countT -= 1
+    #     time.sleep(0.9)
+    #     countT -= 1
         
-        # check for quit (typically the Esc key)
-        if endExpNow or event.getKeys(keyList=["escape"]):
-            core.quit()
+    #     # check for quit (typically the Esc key)
+    #     if endExpNow or event.getKeys(keyList=["escape"]):
+    #         core.quit()
         
-        # check if all components have finished
-        if not continueRoutine:  # a component has requested a forced-end of Routine
-            break
-        continueRoutine = False  # will revert to True if at least one component still running
-        for thisComponent in countDownComponents:
-            if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                continueRoutine = True
-                break  # at least one component has not yet finished
+    #     # check if all components have finished
+    #     if not continueRoutine:  # a component has requested a forced-end of Routine
+    #         break
+    #     continueRoutine = False  # will revert to True if at least one component still running
+    #     for thisComponent in countDownComponents:
+    #         if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+    #             continueRoutine = True
+    #             break  # at least one component has not yet finished
         
-        # refresh the screen
-        if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-            win.flip()  
+    #     # refresh the screen
+    #     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
+    #         win.flip()  
     
     # -------Ending Routine "countDown"-------
     for thisComponent in countDownComponents:
@@ -976,39 +983,39 @@ for r in range(runNum):
         if hasattr(thisComponent, 'status'):
             thisComponent.status = NOT_STARTED
     
-    # -------Start Routine "showIDScreen"-------
-    while continueRoutine and routineTimer.getTime() > 0:
-        # get current time
-        t = showIDScreenClock.getTime()
-        frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-        # update/draw components on each frame
+    # -------Start Routine "showIDScreen"-------(close)
+    # while continueRoutine and routineTimer.getTime() > 0:
+    #     # get current time
+    #     t = showIDScreenClock.getTime()
+    #     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+    #     # update/draw components on each frame
         
-        # *textShowID* updates
-        if t >= 0.0 and textShowID.status == NOT_STARTED:
-            # keep track of start time/frame for later
-            textShowID.tStart = t
-            textShowID.frameNStart = frameN  # exact frame index
-            textShowID.setAutoDraw(True)
-        frameRemains = 0.0 + int(showIDScreenTime)- win.monitorFramePeriod * 0.75  # most of one frame period left
-        if textShowID.status == STARTED and t >= frameRemains:
-            textShowID.setAutoDraw(False)
+    #     # *textShowID* updates
+    #     if t >= 0.0 and textShowID.status == NOT_STARTED:
+    #         # keep track of start time/frame for later
+    #         textShowID.tStart = t
+    #         textShowID.frameNStart = frameN  # exact frame index
+    #         textShowID.setAutoDraw(True)
+    #     frameRemains = 0.0 + int(showIDScreenTime)- win.monitorFramePeriod * 0.75  # most of one frame period left
+    #     if textShowID.status == STARTED and t >= frameRemains:
+    #         textShowID.setAutoDraw(False)
         
-        # check for quit (typically the Esc key)
-        if endExpNow or event.getKeys(keyList=["escape"]):
-            core.quit()
+    #     # check for quit (typically the Esc key)
+    #     if endExpNow or event.getKeys(keyList=["escape"]):
+    #         core.quit()
         
-        # check if all components have finished
-        if not continueRoutine:  # a component has requested a forced-end of Routine
-            break
-        continueRoutine = False  # will revert to True if at least one component still running
-        for thisComponent in showIDScreenComponents:
-            if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                continueRoutine = True
-                break  # at least one component has not yet finished
+    #     # check if all components have finished
+    #     if not continueRoutine:  # a component has requested a forced-end of Routine
+    #         break
+    #     continueRoutine = False  # will revert to True if at least one component still running
+    #     for thisComponent in showIDScreenComponents:
+    #         if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+    #             continueRoutine = True
+    #             break  # at least one component has not yet finished
         
-        # refresh the screen
-        if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-            win.flip()
+    #     # refresh the screen
+    #     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
+    #         win.flip()
     
     # -------Ending Routine "showIDScreen"-------
     for thisComponent in showIDScreenComponents:
@@ -1030,39 +1037,39 @@ for r in range(runNum):
         if hasattr(thisComponent, 'status'):
             thisComponent.status = NOT_STARTED
     
-    # -------Start Routine "Fixation4s"-------
-    while continueRoutine and routineTimer.getTime() > 0:
-        # get current time
-        t = Fixation4sClock.getTime()
-        frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-        # update/draw components on each frame
+    # -------Start Routine "Fixation4s"-------(close)
+    # while continueRoutine and routineTimer.getTime() > 0:
+    #     # get current time
+    #     t = Fixation4sClock.getTime()
+    #     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+    #     # update/draw components on each frame
         
-        # *textFixation* updates
-        if t >= 0.0 and textFixation.status == NOT_STARTED:
-            # keep track of start time/frame for later
-            textFixation.tStart = t
-            textFixation.frameNStart = frameN  # exact frame index
-            textFixation.setAutoDraw(True)
-        frameRemains = 0.0 + int(Fixation4sTime)- win.monitorFramePeriod * 0.75  # most of one frame period left
-        if textFixation.status == STARTED and t >= frameRemains:
-            textFixation.setAutoDraw(False)
+    #     # *textFixation* updates
+    #     if t >= 0.0 and textFixation.status == NOT_STARTED:
+    #         # keep track of start time/frame for later
+    #         textFixation.tStart = t
+    #         textFixation.frameNStart = frameN  # exact frame index
+    #         textFixation.setAutoDraw(True)
+    #     frameRemains = 0.0 + int(Fixation4sTime)- win.monitorFramePeriod * 0.75  # most of one frame period left
+    #     if textFixation.status == STARTED and t >= frameRemains:
+    #         textFixation.setAutoDraw(False)
         
-        # check for quit (typically the Esc key)
-        if endExpNow or event.getKeys(keyList=["escape"]):
-            core.quit()
+    #     # check for quit (typically the Esc key)
+    #     if endExpNow or event.getKeys(keyList=["escape"]):
+    #         core.quit()
         
-        # check if all components have finished
-        if not continueRoutine:  # a component has requested a forced-end of Routine
-            break
-        continueRoutine = False  # will revert to True if at least one component still running
-        for thisComponent in Fixation4sComponents:
-            if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                continueRoutine = True
-                break  # at least one component has not yet finished
+    #     # check if all components have finished
+    #     if not continueRoutine:  # a component has requested a forced-end of Routine
+    #         break
+    #     continueRoutine = False  # will revert to True if at least one component still running
+    #     for thisComponent in Fixation4sComponents:
+    #         if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+    #             continueRoutine = True
+    #             break  # at least one component has not yet finished
         
-        # refresh the screen
-        if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-            win.flip()
+    #     # refresh the screen
+    #     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
+    #         win.flip()
     
     # -------Ending Routine "Fixation4s"-------
     for thisComponent in Fixation4sComponents:
@@ -1135,38 +1142,38 @@ for r in range(runNum):
         for thisComponent in showPartnerScreenComponents:
             if hasattr(thisComponent, 'status'):
                 thisComponent.status = NOT_STARTED
-        # -------Start Routine "showPartnerScreen"-------
-        while continueRoutine and routineTimer.getTime() > 0:
-            # get current time
-            t = showPartnerScreenClock.getTime()
-            frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+        # -------Start Routine "showPartnerScreen"-------(close)
+        # while continueRoutine and routineTimer.getTime() > 0:
+        #     # get current time
+        #     t = showPartnerScreenClock.getTime()
+        #     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
             
-            # *textShowPartner* updates
-            if t >= 0.0 and textShowPartner.status == NOT_STARTED:
-                # keep track of start time/frame for later
-                textShowPartner.tStart = t
-                textShowPartner.frameNStart = frameN  # exact frame index
-                textShowPartner.setAutoDraw(True)
-            frameRemains = 0.0 + int(showPartnerScreenTime)- win.monitorFramePeriod * 0.75  # most of one frame period left
-            if textShowPartner.status == STARTED and t >= frameRemains:
-                textShowPartner.setAutoDraw(False)
+        #     # *textShowPartner* updates
+        #     if t >= 0.0 and textShowPartner.status == NOT_STARTED:
+        #         # keep track of start time/frame for later
+        #         textShowPartner.tStart = t
+        #         textShowPartner.frameNStart = frameN  # exact frame index
+        #         textShowPartner.setAutoDraw(True)
+        #     frameRemains = 0.0 + int(showPartnerScreenTime)- win.monitorFramePeriod * 0.75  # most of one frame period left
+        #     if textShowPartner.status == STARTED and t >= frameRemains:
+        #         textShowPartner.setAutoDraw(False)
             
-            # check for quit (typically the Esc key)
-            if endExpNow or event.getKeys(keyList=["escape"]):
-                core.quit()
+        #     # check for quit (typically the Esc key)
+        #     if endExpNow or event.getKeys(keyList=["escape"]):
+        #         core.quit()
             
-            # check if all components have finished
-            if not continueRoutine:  # a component has requested a forced-end of Routine
-                break
-            continueRoutine = False  # will revert to True if at least one component still running
-            for thisComponent in showPartnerScreenComponents:
-                if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                    continueRoutine = True
-                    break  # at least one component has not yet finished
+        #     # check if all components have finished
+        #     if not continueRoutine:  # a component has requested a forced-end of Routine
+        #         break
+        #     continueRoutine = False  # will revert to True if at least one component still running
+        #     for thisComponent in showPartnerScreenComponents:
+        #         if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+        #             continueRoutine = True
+        #             break  # at least one component has not yet finished
             
-            # refresh the screen
-            if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-                win.flip()
+        #     # refresh the screen
+        #     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
+        #         win.flip()
         
         # -------Ending Routine "showPartnerScreen"-------
         for thisComponent in showPartnerScreenComponents:
