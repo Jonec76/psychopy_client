@@ -33,6 +33,10 @@ from os.path import expanduser
 import select
 
 
+payoff_nums = ['8', '2', '4', '6', '4', '6', '2', '8']
+choice_nums = [(2, 8), (4, 6), (6, 4), (8, 6)]
+
+
 # Read config file
 config_file='config_comm.json'
 try:
@@ -195,19 +199,19 @@ def to_1024_768_1D(y):
         y2 = y
     return y2
 def stimuli_setting(stage, role, partner, counterbalance, **feedback):   # feedbck['role_idx', 'partner_idx','RunCommunication'] 
-    img_PayoffMatrix.setImage(image_PayoffMatrix_list[stage-1])
+    img_PayoffMatrix.setImage('../new_images/Decision_ExcPos0_1.png')
 
     # DEC
-    textYou.setText('Player '+ str(role.capitalize()))
-    playerColor = playerColor_dict[str(role.capitalize())]
+    # textYou.setText('Player '+ str(role.capitalize()))
+    # playerColor = playerColor_dict[str(role.capitalize())]
     #textYou.color = playerColor
     #textX.color = playerColor
     #textY.color = playerColor
-    textPosList = [[0.035, 0.2], [0.38, 0.2]]
-    textX.setPos(to_1024_768_2D(textPosList[0-counterbalance][0], textPosList[0-counterbalance][1]))
-    textY.setPos(to_1024_768_2D(textPosList[1-counterbalance][0], textPosList[1-counterbalance][1]))
-    textPartner.setText('Player '+str(partner))
-    textPartner.color = playerColor_dict[str(partner)]
+    # textPosList = [[0.035, 0.2], [0.38, 0.2]]
+    # textX.setPos(to_1024_768_2D(textPosList[0-counterbalance][0], textPosList[0-counterbalance][1]))
+    # textY.setPos(to_1024_768_2D(textPosList[1-counterbalance][0], textPosList[1-counterbalance][1]))
+    # textPartner.setText('Player '+str(partner))
+    # textPartner.color = playerColor_dict[str(partner)]
 
     # FB
     if len(feedback) != 0:
@@ -246,105 +250,126 @@ def assign_reward(data2_clients_list, role_idx, partner_idx, role, partner, coun
         img_circle.setPos(to_1024_768_2D(0.32, -0.27))
 
     return [reward, partner_reward]
-def draw_stimuli(time):
-    if t >= 0.0 and img_PayoffMatrix.status == NOT_STARTED:
-        img_PayoffMatrix.tStart = t
-        img_PayoffMatrix.frameNStart = frameN  # exact frame index
-        img_PayoffMatrix.setAutoDraw(True)
+def draw_components(x,time,t,frameN, show):
+    if t >= 0.0 and x.status == NOT_STARTED:
+        x.tStart = t
+        x.frameNStart = frameN  # exact frame index
+        x.setAutoDraw(show)
     frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
-    if img_PayoffMatrix.status == STARTED and t >= frameRemains:
-        img_PayoffMatrix.setAutoDraw(False)
-    if t >= 0.0 and textPartner.status == NOT_STARTED:
-        textPartner.tStart = t
-        textPartner.frameNStart = frameN  # exact frame index
-        textPartner.setAutoDraw(True)
-    frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
-    if textPartner.status == STARTED and t >= frameRemains:
-        textPartner.setAutoDraw(False)
-    if t >= 0.0 and textYou.status == NOT_STARTED:
-        textYou.tStart = t
-        textYou.frameNStart = frameN  # exact frame index
-        textYou.setAutoDraw(True)
-    frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
-    if textYou.status == STARTED and t >= frameRemains:
-        textYou.setAutoDraw(False)
-    if t >= 0.0 and textX.status == NOT_STARTED:
-        textX.tStart = t
-        textX.frameNStart = frameN  # exact frame index
-        textX.setAutoDraw(True)
-    frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
-    if textX.status == STARTED and t >= frameRemains:
-        textX.setAutoDraw(False)
-    if t >= 0.0 and textY.status == NOT_STARTED:
-        textY.tStart = t
-        textY.frameNStart = frameN  # exact frame index
-        textY.setAutoDraw(True)
-    frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
-    if textY.status == STARTED and t >= frameRemains:
-        textY.setAutoDraw(False)
-    if t >= 0.0 and textSuccessRate.status == NOT_STARTED:
-        textSuccessRate.tStart = t
-        textSuccessRate.frameNStart = frameN  # exact frame index
-        textSuccessRate.setAutoDraw(True)
-    frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
-    if textSuccessRate.status == STARTED and t >= frameRemains:
-        textSuccessRate.setAutoDraw(False)
-    if t >= 0.0 and textSpace1.status == NOT_STARTED:
-        textSpace1.tStart = t
-        textSpace1.frameNStart = frameN  # exact frame index
-        textSpace1.setAutoDraw(True)
-    frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
-    if textSpace1.status == STARTED and t >= frameRemains:
-        textSpace1.setAutoDraw(False)
-    if t >= 0.0 and textSpace2.status == NOT_STARTED:
-        textSpace2.tStart = t
-        textSpace2.frameNStart = frameN  # exact frame index
-        textSpace2.setAutoDraw(True)
-    frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
-    if textSpace2.status == STARTED and t >= frameRemains:
-        textSpace2.setAutoDraw(False)
-    if t >= 0.0 and textSpace3.status == NOT_STARTED:
-        textSpace3.tStart = t
-        textSpace3.frameNStart = frameN  # exact frame index
-        textSpace3.setAutoDraw(True)
-    frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
-    if textSpace3.status == STARTED and t >= frameRemains:
-        textSpace3.setAutoDraw(False)
-    if t >= 0.0 and textSpace4.status == NOT_STARTED:
-        textSpace4.tStart = t
-        textSpace4.frameNStart = frameN  # exact frame index
-        textSpace4.setAutoDraw(True)
-    frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
-    if textSpace4.status == STARTED and t >= frameRemains:
-        textSpace4.setAutoDraw(False)
-    if t >= 0.0 and textSpace5.status == NOT_STARTED:
-        textSpace5.tStart = t
-        textSpace5.frameNStart = frameN  # exact frame index
-        textSpace5.setAutoDraw(True)
-    frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
-    if textSpace5.status == STARTED and t >= frameRemains:
-        textSpace5.setAutoDraw(False)
-    if t >= 0.0 and textSpace6.status == NOT_STARTED:
-        textSpace6.tStart = t
-        textSpace6.frameNStart = frameN  # exact frame index
-        textSpace6.setAutoDraw(True)
-    frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
-    if textSpace6.status == STARTED and t >= frameRemains:
-        textSpace6.setAutoDraw(False)
-    if t >= 0.0 and textSpace7.status == NOT_STARTED:
-        textSpace7.tStart = t
-        textSpace7.frameNStart = frameN  # exact frame index
-        textSpace7.setAutoDraw(True)
-    frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
-    if textSpace7.status == STARTED and t >= frameRemains:
-        textSpace7.setAutoDraw(False)
-    if t >= 0.0 and textSpace8.status == NOT_STARTED:
-        textSpace8.tStart = t
-        textSpace8.frameNStart = frameN  # exact frame index
-        textSpace8.setAutoDraw(True)
-    frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
-    if textSpace8.status == STARTED and t >= frameRemains:
-        textSpace8.setAutoDraw(False)
+    if x.status == STARTED and t >= frameRemains:
+        x.setAutoDraw(False)
+def draw_stimuli(components, time,t,frameN):
+	for c in components:
+		draw_components(c,time,t,frameN, True)
+# def draw_stimuli(time):
+#     for c in choices_stimulis:
+#         if t >= 0.0 and img_PayoffMatrix.status == NOT_STARTED:
+#             img_PayoffMatrix.tStart = t
+#             img_PayoffMatrix.frameNStart = frameN  # exact frame index
+#             img_PayoffMatrix.setAutoDraw(True)
+#         frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
+#         if img_PayoffMatrix.status == STARTED and t >= frameRemains:
+#             img_PayoffMatrix.setAutoDraw(False)
+
+
+#     if t >= 0.0 and img_PayoffMatrix.status == NOT_STARTED:
+#         img_PayoffMatrix.tStart = t
+#         img_PayoffMatrix.frameNStart = frameN  # exact frame index
+#         img_PayoffMatrix.setAutoDraw(True)
+#     frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
+#     if img_PayoffMatrix.status == STARTED and t >= frameRemains:
+#         img_PayoffMatrix.setAutoDraw(False)
+#     if t >= 0.0 and textPartner.status == NOT_STARTED:
+#         textPartner.tStart = t
+#         textPartner.frameNStart = frameN  # exact frame index
+#         textPartner.setAutoDraw(True)
+#     frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
+#     if textPartner.status == STARTED and t >= frameRemains:
+#         textPartner.setAutoDraw(False)
+#     if t >= 0.0 and textYou.status == NOT_STARTED:
+#         textYou.tStart = t
+#         textYou.frameNStart = frameN  # exact frame index
+#         textYou.setAutoDraw(True)
+#     frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
+#     if textYou.status == STARTED and t >= frameRemains:
+#         textYou.setAutoDraw(False)
+#     if t >= 0.0 and textX.status == NOT_STARTED:
+#         textX.tStart = t
+#         textX.frameNStart = frameN  # exact frame index
+#         textX.setAutoDraw(True)
+#     frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
+#     if textX.status == STARTED and t >= frameRemains:
+#         textX.setAutoDraw(False)
+#     if t >= 0.0 and textY.status == NOT_STARTED:
+#         textY.tStart = t
+#         textY.frameNStart = frameN  # exact frame index
+#         textY.setAutoDraw(True)
+#     frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
+#     if textY.status == STARTED and t >= frameRemains:
+#         textY.setAutoDraw(False)
+#     if t >= 0.0 and textSuccessRate.status == NOT_STARTED:
+#         textSuccessRate.tStart = t
+#         textSuccessRate.frameNStart = frameN  # exact frame index
+#         textSuccessRate.setAutoDraw(True)
+#     frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
+#     if textSuccessRate.status == STARTED and t >= frameRemains:
+#         textSuccessRate.setAutoDraw(False)
+#     if t >= 0.0 and textSpace1.status == NOT_STARTED:
+#         textSpace1.tStart = t
+#         textSpace1.frameNStart = frameN  # exact frame index
+#         textSpace1.setAutoDraw(True)
+#     frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
+#     if textSpace1.status == STARTED and t >= frameRemains:
+#         textSpace1.setAutoDraw(False)
+#     if t >= 0.0 and textSpace2.status == NOT_STARTED:
+#         textSpace2.tStart = t
+#         textSpace2.frameNStart = frameN  # exact frame index
+#         textSpace2.setAutoDraw(True)
+#     frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
+#     if textSpace2.status == STARTED and t >= frameRemains:
+#         textSpace2.setAutoDraw(False)
+#     if t >= 0.0 and textSpace3.status == NOT_STARTED:
+#         textSpace3.tStart = t
+#         textSpace3.frameNStart = frameN  # exact frame index
+#         textSpace3.setAutoDraw(True)
+#     frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
+#     if textSpace3.status == STARTED and t >= frameRemains:
+#         textSpace3.setAutoDraw(False)
+#     if t >= 0.0 and textSpace4.status == NOT_STARTED:
+#         textSpace4.tStart = t
+#         textSpace4.frameNStart = frameN  # exact frame index
+#         textSpace4.setAutoDraw(True)
+#     frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
+#     if textSpace4.status == STARTED and t >= frameRemains:
+#         textSpace4.setAutoDraw(False)
+#     if t >= 0.0 and textSpace5.status == NOT_STARTED:
+#         textSpace5.tStart = t
+#         textSpace5.frameNStart = frameN  # exact frame index
+#         textSpace5.setAutoDraw(True)
+#     frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
+#     if textSpace5.status == STARTED and t >= frameRemains:
+#         textSpace5.setAutoDraw(False)
+#     if t >= 0.0 and textSpace6.status == NOT_STARTED:
+#         textSpace6.tStart = t
+#         textSpace6.frameNStart = frameN  # exact frame index
+#         textSpace6.setAutoDraw(True)
+#     frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
+#     if textSpace6.status == STARTED and t >= frameRemains:
+#         textSpace6.setAutoDraw(False)
+#     if t >= 0.0 and textSpace7.status == NOT_STARTED:
+#         textSpace7.tStart = t
+#         textSpace7.frameNStart = frameN  # exact frame index
+#         textSpace7.setAutoDraw(True)
+#     frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
+#     if textSpace7.status == STARTED and t >= frameRemains:
+#         textSpace7.setAutoDraw(False)
+#     if t >= 0.0 and textSpace8.status == NOT_STARTED:
+#         textSpace8.tStart = t
+#         textSpace8.frameNStart = frameN  # exact frame index
+#         textSpace8.setAutoDraw(True)
+#     frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
+#     if textSpace8.status == STARTED and t >= frameRemains:
+#         textSpace8.setAutoDraw(False)
 def trans(role, stage, subject_choice_key, counterbalance, group, partner):
     tra = {}
     # create subject_choice_key to choice ['X','Y'] dictionary
@@ -511,6 +536,16 @@ for r in range(runNum):
             print("Cannot switch to English IME.")
             sys.exit(1)
 
+
+    small_num_pos = [to_1024_768_2D(-0.16, 0.27), to_1024_768_2D(-0.05, 0.27), to_1024_768_2D(-0.16, 0.14), to_1024_768_2D(-0.05, 0.14)
+                , to_1024_768_2D(0.05, 0.27), to_1024_768_2D(0.16, 0.27), to_1024_768_2D(0.05, 0.14), to_1024_768_2D(0.16, 0.14)]
+
+    big_num_pos = [to_1024_768_2D(-0.23, 0.12), to_1024_768_2D(-0.08, 0.12), to_1024_768_2D(-0.23, -0.12), to_1024_768_2D(-0.08, -0.12)
+                    , to_1024_768_2D(0.05, 0.27), to_1024_768_2D(0.16, 0.27), to_1024_768_2D(0.05, 0.14), to_1024_768_2D(0.16, 0.14)]
+
+    choice_pos = [to_1024_768_2D(-0.29, -0.16), to_1024_768_2D(-0.25, -0.27), to_1024_768_2D(-0.11, -0.16), to_1024_768_2D(-0.07, -0.27), to_1024_768_2D(0.08, -0.16), 
+                to_1024_768_2D(0.12, -0.27), to_1024_768_2D(0.26, -0.16), to_1024_768_2D(0.30, -0.27)]
+
     # Initialize components for Routine "WelcomeScreen"
     WelcomeScreenClock = core.Clock()
     text_welcome = visual.TextStim(win=win, name='text_welcome',
@@ -572,100 +607,161 @@ for r in range(runNum):
         flipHoriz=False, flipVert=False,
         texRes=1024, interpolate=True, depth=0.0)
     
-    image_PayoffMatrix_list = ['../images/Payoff Matrix_S1.png', '../images/Payoff Matrix_S2.png']
+    image_PayoffMatrix_list = ['../new_images/Payoff Matrix_S1.png', '../images/Payoff Matrix_S2.png']
 
     textSpace1 = visual.TextStim(win=win, name='textSpace1',
         text='default text',
         font='Arial',
-        pos=to_1024_768_2D(-0.02, -0.02), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
+        pos=to_1024_768_2D(-0.16, 0.27), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
         color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
         languageStyle='LTR',
         depth=0.0);
     textSpace2 = visual.TextStim(win=win, name='textSpace2',
         text='default text',
         font='Arial',
-        pos=to_1024_768_2D(0.1, -0.02), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
+        pos=to_1024_768_2D(-0.05, 0.27), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
         color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
         languageStyle='LTR',
         depth=0.0);
     textSpace3 = visual.TextStim(win=win, name='textSpace3',
         text='default text',
         font='Arial',
-        pos=to_1024_768_2D(0.32, -0.02), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
+        pos=to_1024_768_2D(-0.16, 0.14), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
         color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
         languageStyle='LTR',
         depth=0.0);
     textSpace4 = visual.TextStim(win=win, name='textSpace4',
         text='default text',
         font='Arial',
-        pos=to_1024_768_2D(0.44, -0.02), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
+        pos=to_1024_768_2D(-0.05, 0.14), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
         color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
         languageStyle='LTR',
         depth=0.0);
     textSpace5 = visual.TextStim(win=win, name='textSpace5',
         text='default text',
         font='Arial',
-        pos=to_1024_768_2D(-0.02, -0.27), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
+        pos=to_1024_768_2D(0.05, 0.27), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
         color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
         languageStyle='LTR',
         depth=0.0);
     textSpace6 = visual.TextStim(win=win, name='textSpace6',
         text='default text',
         font='Arial',
-        pos=to_1024_768_2D(0.1, -0.27), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
+        pos=to_1024_768_2D(0.16, 0.27), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
         color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
         languageStyle='LTR',
         depth=0.0);
     textSpace7 = visual.TextStim(win=win, name='textSpace7',
         text='default text',
         font='Arial',
-        pos=to_1024_768_2D(0.32, -0.27), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
+        pos=to_1024_768_2D(0.05, 0.14), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
         color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
         languageStyle='LTR',
         depth=0.0);
     textSpace8 = visual.TextStim(win=win, name='textSpace8',
         text='default text',
         font='Arial',
-        pos=to_1024_768_2D(0.44, -0.27), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
+        pos=to_1024_768_2D(0.16, 0.14), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
         color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
         languageStyle='LTR',
         depth=0.0);
+
+
+    choiceSpace1 = visual.TextStim(win=win, name='choiceSpace1',
+        text='default text',
+        font='Arial',
+        pos=to_1024_768_2D(-0.16, 0.27), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
+        color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
+        languageStyle='LTR',
+        depth=0.0);
+    choiceSpace2 = visual.TextStim(win=win, name='choiceSpace2',
+        text='default text',
+        font='Arial',
+        pos=to_1024_768_2D(-0.05, 0.27), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
+        color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
+        languageStyle='LTR',
+        depth=0.0);
+    choiceSpace3 = visual.TextStim(win=win, name='choiceSpace3',
+        text='default text',
+        font='Arial',
+        pos=to_1024_768_2D(-0.16, 0.14), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
+        color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
+        languageStyle='LTR',
+        depth=0.0);
+    choiceSpace4 = visual.TextStim(win=win, name='choiceSpace4',
+        text='default text',
+        font='Arial',
+        pos=to_1024_768_2D(-0.05, 0.14), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
+        color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
+        languageStyle='LTR',
+        depth=0.0);
+    choiceSpace5 = visual.TextStim(win=win, name='choiceSpace5',
+        text='default text',
+        font='Arial',
+        pos=to_1024_768_2D(0.05, 0.27), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
+        color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
+        languageStyle='LTR',
+        depth=0.0);
+    choiceSpace6 = visual.TextStim(win=win, name='choiceSpace6',
+        text='default text',
+        font='Arial',
+        pos=to_1024_768_2D(0.16, 0.27), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
+        color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
+        languageStyle='LTR',
+        depth=0.0);
+    choiceSpace7 = visual.TextStim(win=win, name='choiceSpace7',
+        text='default text',
+        font='Arial',
+        pos=to_1024_768_2D(0.05, 0.14), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
+        color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
+        languageStyle='LTR',
+        depth=0.0);
+    choiceSpace8 = visual.TextStim(win=win, name='choiceSpace8',
+        text='default text',
+        font='Arial',
+        pos=to_1024_768_2D(0.16, 0.14), height=to_1024_768_1D(0.1), wrapWidth=None, ori=0, 
+        color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
+        languageStyle='LTR',
+        depth=0.0);
+
+    
     textSuccessRate = visual.TextStim(win=win, name='textSuccessRate',
-        text='(11/12)',
+        text='',
         font='Arial',
         pos=to_1024_768_2D(-0.21, 0.18), height=to_1024_768_1D(0.042), wrapWidth=None, ori=0, 
         color=[1.000,0.961,-0.765], colorSpace='rgb', opacity=1, 
         languageStyle='LTR',
         depth=0.0);
     textPartner = visual.TextStim(win=win, name='textPartner',
-        text='default text',
+        text='',
         font='Arial',
         pos=to_1024_768_2D(-0.55, -0.17), height=to_1024_768_1D(0.07), wrapWidth=None, ori=270, 
         color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
         languageStyle='LTR',
         depth=0.0);
     textYou = visual.TextStim(win=win, name='textYou',
-        text='default text',
+        text='',
         font='Arial',
         pos=to_1024_768_2D(0.21, 0.4), height=to_1024_768_1D(0.07), wrapWidth=None, ori=0, 
         color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
         languageStyle='LTR',
         depth=0.0);
     textX = visual.TextStim(win=win, name='textX',
-        text='X',
+        text='',
         font='Arial',
         pos=to_1024_768_2D(0.05, 0.2), height=to_1024_768_1D(0.11), wrapWidth=None, ori=0, 
         color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
         languageStyle='LTR',
         depth=0.0);
     textY = visual.TextStim(win=win, name='textY',
-        text='Y',
+        text='',
         font='Arial',
         pos=to_1024_768_2D(0.39, 0.2), height=to_1024_768_1D(0.11), wrapWidth=None, ori=0, 
         color=[1.000,1.000,1.000], colorSpace='rgb', opacity=1, 
         languageStyle='LTR',
         depth=0.0);
 
+    
     # Initialize components for Routine "AllianceCheckWait"
     AllianceCheckWaitClock = core.Clock()
     textWait = visual.TextStim(win=win, name='textWait',
@@ -709,7 +805,16 @@ for r in range(runNum):
         color=[1,1,1], colorSpace='rgb', opacity=1,
         flipHoriz=False, flipVert=False,
         texRes=1024, interpolate=True, depth=-1)
-
+    
+    dash = visual.ImageStim(
+        win=win,
+        name='dash', 
+        image='../new_images/choice_dash.png', mask=None,
+        ori=0, pos=to_1024_768_2D(-0.27, -0.22), size=to_1024_768_2D(0.13, 0.26),
+        color=[1,1,1], colorSpace='rgb', opacity=1,
+        flipHoriz=False, flipVert=False,
+        texRes=1024, interpolate=True, depth=-3)
+        
     # Initialize components for Routine "IStageI"
     IStageIClock = core.Clock()
     textIStageI = visual.TextStim(win=win, name='textIStageI',
@@ -762,6 +867,9 @@ for r in range(runNum):
         languageStyle='LTR',
         depth=0.0);
 
+
+    payoff_nums_stimulis = [textSpace1, textSpace2, textSpace3, textSpace4, textSpace5, textSpace6, textSpace7, textSpace8]
+    choices_stimulis = [choiceSpace1, choiceSpace2, choiceSpace3, choiceSpace4, choiceSpace5, choiceSpace6, choiceSpace7, choiceSpace8]
 
 
     # store frame rate of monitor if we can measure it
@@ -1286,41 +1394,45 @@ for r in range(runNum):
 
             #stimuli_setting(stage, role, partner, counterbalance)
             stimuli_setting(1, role_alphabet, partnerID, exc_stage1)
-
+            DEC1Components = [img_PayoffMatrix]
+            
             # set text payoff
-            textSpace1.setText(str(space1))
-            textSpace2.setText(str(space2))
-            textSpace3.setText(str(space3))
-            textSpace4.setText(str(space4))
-            textSpace5.setText(str(space5))
-            textSpace6.setText(str(space6))
-            textSpace7.setText(str(space7))
-            textSpace8.setText(str(space8))
+            for idx, t in enumerate(payoff_nums_stimulis):
+                t.setText(payoff_nums[idx])
+                DEC1Components.append(t)
 
-            # set color
-            partnerColor = playerColor_dict[str(partnerID)]
-            textSpace2.color = partnerColor
-            textSpace4.color = partnerColor
-            textSpace6.color = partnerColor
-            textSpace8.color = partnerColor
+
+            for idx, c in enumerate(choices_stimulis):
+                c.pos = choice_pos[idx]
+                c.setText(choice_nums[idx >> 1][idx & 1])
+                DEC1Components.append(c)
+										
+
+            # # set color
+            # partnerColor = playerColor_dict[str(partnerID)]
+            # textSpace2.color = partnerColor
+            # textSpace4.color = partnerColor
+            # textSpace6.color = partnerColor
+            # textSpace8.color = partnerColor
 
             # keep track of which components have finished
-            DEC1Components = [img_PayoffMatrix, textPartner, textYou, textX, textY, textSuccessRate, textSpace1, textSpace2, textSpace3, textSpace4, textSpace5, textSpace6, textSpace7, textSpace8]
+            
             for thisComponent in DEC1Components:
                 if hasattr(thisComponent, 'status'):
                     thisComponent.status = NOT_STARTED
 
             # record start trial time(DecOns1)  
             startTrialT = ExperimentClock.getTime()
-
+            has_answered = False
             # -------Start Routine "DEC1"-------
             while continueRoutine and routineTimer.getTime() > 0:
                 # get current time
                 t = DEC1Clock.getTime()
                 frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
                 # update/draw components on each frame
-                draw_stimuli(DEC1Time)
-                
+                # draw_stimuli(DEC1Time)
+                draw_components(dash, DEC1Time,t,frameN, has_answered)
+                draw_stimuli(DEC1Components, DEC1Time,t,frameN)
                 # *key_resp_DEC1* updates
                 if t >= 0.0 and key_resp_DEC1.status == NOT_STARTED:
                     # keep track of start time/frame for later
@@ -1334,16 +1446,18 @@ for r in range(runNum):
                 if key_resp_DEC1.status == STARTED and t >= frameRemains:
                     key_resp_DEC1.status = FINISHED
                 if key_resp_DEC1.status == STARTED:
-                    theseKeys = event.getKeys(keyList=['1', '2'])
-                    
+                    theseKeys = event.getKeys(keyList=['1', '2', '3', '4'])
                     # check for quit:
                     if "escape" in theseKeys:
                         endExpNow = True
-                    if len(theseKeys) > 0:  # at least one key was pressed
+                    if len(theseKeys) > 0 and not has_answered:  # at least one key was pressed
                         key_resp_DEC1.keys = theseKeys[-1]  # just the last key pressed
                         key_resp_DEC1.rt = key_resp_DEC1.clock.getTime()
+                        has_answered = True
+                        dash.pos = to_1024_768_2D(-0.27+(int(theseKeys[0])-1)*0.185, -0.22)
+                        dash.setAutoDraw(True)
                         # a response ends the routine
-                        continueRoutine = False
+                        # continueRoutine = False
                 
                 # check for quit (typically the Esc key)
                 if endExpNow or event.getKeys(keyList=["escape"]):
@@ -1644,7 +1758,8 @@ for r in range(runNum):
                 if img_oppoFrame.status == STARTED and t >= frameRemains:
                     img_oppoFrame.setAutoDraw(False)
 
-                draw_stimuli(FB1Time)
+                # draw_stimuli(FB1Time)
+                draw_stimuli(FB1Components, FB1Time, t, frameN)
 
                 # check for quit (typically the Esc key)
                 if endExpNow or event.getKeys(keyList=["escape"]):
@@ -1773,8 +1888,10 @@ for r in range(runNum):
                 t = DEC2Clock.getTime()
                 frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
                 # update/draw components on each frame
-                draw_stimuli(DEC2Time)
 
+                # draw_stimuli(DEC2Time)
+                draw_stimuli(DEC2Components, DEC2Time, t, frameN)
+                
                 # *key_resp_DEC2* updates
                 if t >= 0.0 and key_resp_DEC2.status == NOT_STARTED:
                     # keep track of start time/frame for later
@@ -2119,7 +2236,8 @@ for r in range(runNum):
                 if img_oppoFrame.status == STARTED and t >= frameRemains:
                     img_oppoFrame.setAutoDraw(False)
 
-                draw_stimuli(FB2Time)
+                # draw_stimuli(FB2Time)
+                draw_stimuli(FB2Components, FB2Time, t, frameN)
 
                 # check for quit (typically the Esc key)
                 if endExpNow or event.getKeys(keyList=["escape"]):
