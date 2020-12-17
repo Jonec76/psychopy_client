@@ -199,6 +199,8 @@ def to_1024_768_1D(y):
         y2 = y
     return y2
 def stimuli_setting(stage, role, partner, counterbalance, **feedback):   # feedbck['role_idx', 'partner_idx','RunCommunication'] 
+    user_name_table = {0:'pa', 1:'pb', 2:'pc', 3:'pd', 4:'pe', 5:'pf', 6:'pg', 7:'ph'}
+    user_name = []
     img_PayoffMatrix.setImage('../new_images/Decision_ExcPos0_1.png')
 
     # DEC
@@ -213,22 +215,33 @@ def stimuli_setting(stage, role, partner, counterbalance, **feedback):   # feedb
     # textPartner.setText('Player '+str(partner))
     # textPartner.color = playerColor_dict[str(partner)]
 
+    field_choice_pair = []
     # FB
     if len(feedback) != 0:
         data_list_list = [data_clients_list, data2_clients_list]
+        computer_idx = 4
+        for c in computer_choice:
+            data_list_list[stage-1].append({user_name_table[computer_idx]:c})
+            computer_idx += 1
+        for pair in field_pair_list:
+            field = int(pair[0])
+            user = user_name_table[pair[1]]
+            choice = data_list_list[stage-1][pair[1]][user]
+            field_choice_pair.append({field:choice})
 
-        selfFramePosList = [[0.035, -0.029], [0.38, -0.029]]
-        oppoFramePosList = [[0.034, -0.028], [0.034, -0.277]]
+        # selfFramePosList = [[0.035, -0.029], [0.38, -0.029]]
+        # oppoFramePosList = [[0.034, -0.028], [0.034, -0.277]]
 
-        myKeyResponse = int(data_list_list[stage-1][feedback['role_idx']]['respondkeyp'+role])
-        oppoKeyResponse = int(data_list_list[stage-1][feedback['partner_idx']]['respondkeyp'+partner.lower()])
+        # myKeyResponse = int(data_list_list[stage-1][feedback['role_idx']]['respondkeyp'+role])
+        # oppoKeyResponse = int(data_list_list[stage-1][feedback['partner_idx']]['respondkeyp'+partner.lower()])
 
-        img_selfFrame.setImage(image_frame_list[feedback['role_idx']+4*(stage-1)])
-        img_oppoFrame.setImage(image_frame_list[8+feedback['partner_idx']+4*(stage-1)])
-        img_selfFrame.setPos(to_1024_768_2D(selfFramePosList[myKeyResponse-1][0], selfFramePosList[myKeyResponse-1][1])) 
+        # img_selfFrame.setImage(image_frame_list[feedback['role_idx']+4*(stage-1)])
+        # img_oppoFrame.setImage(image_frame_list[8+feedback['partner_idx']+4*(stage-1)])
+        # img_selfFrame.setPos(to_1024_768_2D(selfFramePosList[myKeyResponse-1][0], selfFramePosList[myKeyResponse-1][1])) 
         # if RunCommunication==0, oppo change pos
         # img_oppoFrame.setPos(to_1024_768_2D(oppoFramePosList[oppoKeyResponse-1+(feedback['RunCommunication']-1)][0], oppoFramePosList[oppoKeyResponse-1+(feedback['RunCommunication']-1)][1]))
-        return oppoKeyResponse
+        return field_choice_pair
+
 def assign_reward(data2_clients_list, role_idx, partner_idx, role, partner, counterbalance):
     oppoKeyResponse = int(data2_clients_list[partner_idx]['respondkeyp'+partner.lower()])
     myKeyResponse = int(data2_clients_list[role_idx]['respondkeyp'+role])
@@ -261,6 +274,29 @@ def draw_components(x,time,t,frameN, show):
 def draw_stimuli(components, time,t,frameN):
 	for c in components:
 		draw_components(c,time,t,frameN, True)
+def set_all_user_pos(field_choice_pair, my_field):
+    my_field = int(my_field)
+    if my_field & 1 == 1:
+        partner_field = my_field +1
+    else:
+        partner_field = my_field -1
+
+    tmp_field_choice_pair = field_choice_pair
+    
+    for p in tmp_field_choice_pair:
+        # Unpacking with *
+        # support python>=3.5 for find key
+        if [*p][0] == my_field:
+            my_choice = p[my_field] 
+        if [*p][0] == partner_field:
+            partner_choice = p[partner_field]
+    
+    print(my_choice)
+    print(partner_choice)
+
+    # my_field = int(my_field)
+
+
 # def draw_stimuli(time):
 #     for c in choices_stimulis:
 #         if t >= 0.0 and img_PayoffMatrix.status == NOT_STARTED:
@@ -371,20 +407,19 @@ def draw_stimuli(components, time,t,frameN):
 #     if textSpace8.status == STARTED and t >= frameRemains:
 #         textSpace8.setAutoDraw(False)
 
-def get_field(my_idx, user_fields):
-    my_field_num = user_fields[my_idx]
+def get_field(my_idx, user_fields_num):
+    my_field_num = user_fields_num[my_idx]
     field_list = []
 
 
     if my_field_num <=4:
-        for idx, u in enumerate(user_fields):
-            if u <= 4 :
-                field_list.append(idx)
+        for user, f in enumerate(user_fields_num):
+            if f <= 4 :
+                field_list.append((f, user))
     else:
-        for idx, u in enumerate(user_fields):
-            if u > 4 :
-                field_list.append(idx)
-
+        for user, f in enumerate(user_fields_num):
+            if f > 4 :
+                field_list.append((f, user))
     return field_list
 
 def trans(role, stage, subject_choice_key, counterbalance, group, partner):
@@ -831,6 +866,39 @@ for r in range(runNum):
         color=[1,1,1], colorSpace='rgb', opacity=1,
         flipHoriz=False, flipVert=False,
         texRes=1024, interpolate=True, depth=-3)
+    
+    my_icon = visual.ImageStim(
+        win=win,
+        name='my_icon', 
+        image='sin', mask=None,
+        ori=0, pos=to_1024_768_2D(0.035, -0.029), size=to_1024_768_2D(0.33, 0.72),
+        color=[1,1,1], colorSpace='rgb', opacity=1,
+        flipHoriz=False, flipVert=False,
+        texRes=1024, interpolate=True, depth=-1)
+    partner_icon = visual.ImageStim(
+        win=win,
+        name='partner_icon', 
+        image='sin', mask=None,
+        ori=0, pos=to_1024_768_2D(0.035, -0.029), size=to_1024_768_2D(0.33, 0.72),
+        color=[1,1,1], colorSpace='rgb', opacity=1,
+        flipHoriz=False, flipVert=False,
+        texRes=1024, interpolate=True, depth=-1)
+    op1_icon = visual.ImageStim(
+        win=win,
+        name='op1_icon', 
+        image='sin', mask=None,
+        ori=0, pos=to_1024_768_2D(0.035, -0.029), size=to_1024_768_2D(0.33, 0.72),
+        color=[1,1,1], colorSpace='rgb', opacity=1,
+        flipHoriz=False, flipVert=False,
+        texRes=1024, interpolate=True, depth=-1)
+    op2_icon = visual.ImageStim(
+        win=win,
+        name='op2_icon', 
+        image='sin', mask=None,
+        ori=0, pos=to_1024_768_2D(0.035, -0.029), size=to_1024_768_2D(0.33, 0.72),
+        color=[1,1,1], colorSpace='rgb', opacity=1,
+        flipHoriz=False, flipVert=False,
+        texRes=1024, interpolate=True, depth=-1)
         
     # Initialize components for Routine "IStageI"
     IStageIClock = core.Clock()
@@ -1237,10 +1305,10 @@ for r in range(runNum):
         my_idx = user_idx_dict[clientID]
         for u in user_list:
             user_fields.append(df.at[currentTrial, u])
-        # print(user_fields)
-        # print(my_idx)
-        field_idx_list = []
-        field_idx_list = get_field(my_idx, user_fields)
+
+        # (f, user)
+        field_pair_list = []
+        field_pair_list = get_field(my_idx, user_fields)
 
         # assign subject's role in group
         for k in range(0, len(groupMember_dict)):
@@ -1515,7 +1583,6 @@ for r in range(runNum):
                 # refresh the screen
                 if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
                     win.flip()
-            
             # -------Ending Routine "DEC1"-------
 
             # record end alliance decesion time(Dec1End)
@@ -1530,6 +1597,8 @@ for r in range(runNum):
             for thisComponent in DEC1Components:
                 if hasattr(thisComponent, "setAutoDraw"):
                     thisComponent.setAutoDraw(False)
+            dash.setAutoDraw(False)
+
             # check responses
             if key_resp_DEC1.keys in ['', [], None]:  # No response was made
                 key_resp_DEC1.keys=10000
@@ -1561,6 +1630,12 @@ for r in range(runNum):
             else:
                 continueRoutine = False
             message_ret_data = []
+
+            # ==================
+            waitT = 7
+            # ==================
+
+
             # -------Start Routine "AllianceCheckWait"-------
             while continueRoutine and waitT <= 6:
                 # get current time
@@ -1616,8 +1691,12 @@ for r in range(runNum):
             frameN = -1
             continueRoutine = True
             # update component parameters for each repeat
-            #print(message_ret_data)
 
+            ### For debug
+            ### Directly assign the value to socket data
+            message_ret_data = '[{"trialpb": 1, "pb": [4, 6], "stagepb": 1, "grouppb": 1, "groupb": 1, "partnerpb": "A", "respondkeypb": "2"}, {"trialpc": 1, "pc": [6, 4], "stagepc": 1, "grouppc": 1, "groupc": 1, "partnerpc": "A", "respondkeypc": "3"}, {"trialpd": 1, "pd": [8, 6], "stagepd": 1, "grouppd": 1, "groupd": 1, "partnerpd": "A", "respondkeypd": "4"}, {"trialpa": 1, "pa": [2, 8], "stagepa": 1, "grouppa": 1, "groupa": 1, "partnerpa": "A", "respondkeypa": "1"}]'
+            
+            
             whoMissed = ''
             if PracticeFlag == False:
                 # escape from loop
@@ -1676,39 +1755,39 @@ for r in range(runNum):
             	TRA1_duration = TRA1Time + patch_Dec1 - delay_tra1
             
             # -------Start Routine "TRA1"-------
-            while continueRoutine:
-                # get current time
-                t = TRA1Clock.getTime()
-                frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-                # update/draw components on each frame
+            # while continueRoutine:
+            #     # get current time
+            #     t = TRA1Clock.getTime()
+            #     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+            #     # update/draw components on each frame
                 
-                # *textTRA1* updates
-                if t >= 0.0 and textTRA1.status == NOT_STARTED:
-                    # keep track of start time/frame for later
-                    textTRA1.tStart = t
-                    textTRA1.frameNStart = frameN  # exact frame index
-                    textTRA1.setAutoDraw(True)
-                frameRemains = 0.0 + TRA1_duration - win.monitorFramePeriod * 0.75  # most of one frame period left
-                if textTRA1.status == STARTED and t >= frameRemains:
-                    textTRA1.setAutoDraw(False)
+            #     # *textTRA1* updates
+            #     if t >= 0.0 and textTRA1.status == NOT_STARTED:
+            #         # keep track of start time/frame for later
+            #         textTRA1.tStart = t
+            #         textTRA1.frameNStart = frameN  # exact frame index
+            #         textTRA1.setAutoDraw(True)
+            #     frameRemains = 0.0 + TRA1_duration - win.monitorFramePeriod * 0.75  # most of one frame period left
+            #     if textTRA1.status == STARTED and t >= frameRemains:
+            #         textTRA1.setAutoDraw(False)
                 
-                # check for quit (typically the Esc key)
-                if endExpNow or event.getKeys(keyList=["escape"]):
-                    core.quit()
+            #     # check for quit (typically the Esc key)
+            #     if endExpNow or event.getKeys(keyList=["escape"]):
+            #         core.quit()
                 
-                # check if all components have finished
-                if not continueRoutine:  # a component has requested a forced-end of Routine
-                    break
-                continueRoutine = False  # will revert to True if at least one component still running
+            #     # check if all components have finished
+            #     if not continueRoutine:  # a component has requested a forced-end of Routine
+            #         break
+            #     continueRoutine = False  # will revert to True if at least one component still running
 
-                for thisComponent in TRA1Components:
-                    if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                        continueRoutine = True
-                        break  # at least one component has not yet finished
+            #     for thisComponent in TRA1Components:
+            #         if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+            #             continueRoutine = True
+            #             break  # at least one component has not yet finished
                 
-                # refresh the screen
-                if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-                    win.flip()
+            #     # refresh the screen
+            #     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
+            #         win.flip()
             
             # -------Ending Routine "TRA1"-------
 
@@ -1758,10 +1837,26 @@ for r in range(runNum):
                 else:
                     data_clients_list[role_idx] = trans(role_alphabet, 1, subject_choice_key, exc_stage1, group_num, partnerID)
 
-                partner_stage1_choice = stimuli_setting(1, role_alphabet, partnerID, exc_stage1, role_idx=role_idx, partner_idx=partner_idx)
+                field_choice_pair = stimuli_setting(1, role_alphabet, partnerID, exc_stage1, role_idx=role_idx, partner_idx=partner_idx)
 
             # keep track of which components have finished
-            FB1Components = [img_selfFrame, img_oppoFrame, img_PayoffMatrix, textPartner, textYou, textX, textY, textSuccessRate, textSpace1, textSpace2, textSpace3, textSpace4, textSpace5, textSpace6, textSpace7, textSpace8]
+            # FB1Components = [img_selfFrame, img_oppoFrame, img_PayoffMatrix, textPartner, textYou, textX, textY, textSuccessRate, textSpace1, textSpace2, textSpace3, textSpace4, textSpace5, textSpace6, textSpace7, textSpace8]
+            # print(field_choice_pair)
+            # print(user_fields[my_idx])
+
+            set_all_user_pos(field_choice_pair, user_fields[my_idx])
+            FB1Components = [img_PayoffMatrix, my_icon, partner_icon]
+            
+            # set text payoff
+            for idx, t in enumerate(payoff_nums_stimulis):
+                t.setText(payoff_nums[idx])
+                FB1Components.append(t)
+
+            for idx, c in enumerate(choices_stimulis):
+                c.pos = choice_pos[idx]
+                c.setText(choice_nums[idx >> 1][idx & 1])
+                FB1Components.append(c)
+            
             for thisComponent in FB1Components:
                 if hasattr(thisComponent, 'status'):
                     thisComponent.status = NOT_STARTED
@@ -1777,24 +1872,24 @@ for r in range(runNum):
                 # update/draw components on each frame
                 
                 # *img_selfFrame* updates
-                if t >= 0.0 and img_selfFrame.status == NOT_STARTED:
-                    # keep track of start time/frame for later
-                    img_selfFrame.tStart = t
-                    img_selfFrame.frameNStart = frameN  # exact frame index
-                    img_selfFrame.setAutoDraw(True)
-                frameRemains = 0.0 + int(FB1Time)- win.monitorFramePeriod * 0.75  # most of one frame period left
-                if img_selfFrame.status == STARTED and t >= frameRemains:
-                    img_selfFrame.setAutoDraw(False)
+                # if t >= 0.0 and img_selfFrame.status == NOT_STARTED:
+                #     # keep track of start time/frame for later
+                #     img_selfFrame.tStart = t
+                #     img_selfFrame.frameNStart = frameN  # exact frame index
+                #     img_selfFrame.setAutoDraw(True)
+                # frameRemains = 0.0 + int(FB1Time)- win.monitorFramePeriod * 0.75  # most of one frame period left
+                # if img_selfFrame.status == STARTED and t >= frameRemains:
+                #     img_selfFrame.setAutoDraw(False)
 
-                # *img_oppoFrame* updates
-                if t >= 0.0 and img_oppoFrame.status == NOT_STARTED:
-                    # keep track of start time/frame for later
-                    img_oppoFrame.tStart = t
-                    img_oppoFrame.frameNStart = frameN  # exact frame index
-                    img_oppoFrame.setAutoDraw(True)
-                frameRemains = 0.0 + int(FB1Time)- win.monitorFramePeriod * 0.75  # most of one frame period left
-                if img_oppoFrame.status == STARTED and t >= frameRemains:
-                    img_oppoFrame.setAutoDraw(False)
+                # # *img_oppoFrame* updates
+                # if t >= 0.0 and img_oppoFrame.status == NOT_STARTED:
+                #     # keep track of start time/frame for later
+                #     img_oppoFrame.tStart = t
+                #     img_oppoFrame.frameNStart = frameN  # exact frame index
+                #     img_oppoFrame.setAutoDraw(True)
+                # frameRemains = 0.0 + int(FB1Time)- win.monitorFramePeriod * 0.75  # most of one frame period left
+                # if img_oppoFrame.status == STARTED and t >= frameRemains:
+                #     img_oppoFrame.setAutoDraw(False)
 
                 # draw_stimuli(FB1Time)
                 draw_stimuli(FB1Components, FB1Time, t, frameN)
@@ -2221,7 +2316,7 @@ for r in range(runNum):
                 else:
                     data2_clients_list[role_idx] = trans(role_alphabet, 2, subject_choiceS2_key, exc_stage1, group_num, partnerID)
 
-                partner_stage2_choice = stimuli_setting(2, role_alphabet, partnerID, exc_stage1, role_idx=role_idx, partner_idx=partner_idx) # no failed commu in stage2
+                field_choice_pair = stimuli_setting(2, role_alphabet, partnerID, exc_stage1, role_idx=role_idx, partner_idx=partner_idx) # no failed commu in stage2
 
                 # assign_reward(data2_clients_list, role_idx, partner_idx, role, partner, counterbalance):
                 reward = assign_reward(data2_clients_list, role_idx, partner_idx, role_alphabet, partnerID, exc_stage1)[0]

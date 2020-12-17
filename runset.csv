@@ -1,5 +1,5 @@
-Trial_number,Block_number,InteractionType,ComputerChoice,Payoffmatrix,ExchangePos,v1,v2,v3,v4,v5,v6,v7,v8,card1_D,card1_A,card2_D,card2_A,card3_D,card3_A,card4_D,card4_A,card_seq,card_type,ITItime,group_pa,group_pb,group_pc,group_pd,group_pe,group_pf,group_pg,group_ph,S1_choice_pe,S2_choice_pe,S1_choice_pf,S2_choice_pf,S1_choice_pg,S2_choice_pg,S1_choice_ph,S2_choice_ph
-1,1,CoCm,X,C1,1,2,3,1,4,3,2,4,1,1,2,2,3,1,3,1,2,3,3213,7,5,2,3,4,5,6,7,8,1,1,2,2,3,3,4,4
+﻿Trial_number,Block_number,InteractionType,ComputerChoice,Payoffmatrix,ExchangePos,v1,v2,v3,v4,v5,v6,v7,v8,card1_D,card1_A,card2_D,card2_A,card3_D,card3_A,card4_D,card4_A,card_seq,card_type,ITItime,group_pa,group_pb,group_pc,group_pd,group_pe,group_pf,group_pg,group_ph,S1_choice_pe,S2_choice_pe,S1_choice_pf,S2_choice_pf,S1_choice_pg,S2_choice_pg,S1_choice_ph,S2_choice_ph
+1,1,CoCm,X,C1,1,2,3,1,4,3,2,4,1,1,2,2,3,1,3,1,2,3,3213,7,1,2,3,4,5,6,7,8,1,1,2,2,3,3,4,4
 2,1,CoCm,X,C1,1,2,3,1,4,3,2,4,1,2,4,3,2,2,4,1,2,,,8,1,2,3,4,5,6,7,8,1,1,2,2,3,3,4,4
 3,1,CoCm,X,C1,1,2,3,1,4,3,2,4,1,2,1,2,4,3,2,3,3,,,6,1,2,3,4,5,6,7,8,1,1,2,2,3,3,4,4
 4,1,CoCm,X,C1,0,2,3,1,4,3,2,4,1,1,1,1,3,4,3,1,4,,,7,1,2,3,4,5,6,7,8,1,1,2,2,3,3,4,4
