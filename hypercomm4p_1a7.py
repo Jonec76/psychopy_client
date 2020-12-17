@@ -227,7 +227,7 @@ def stimuli_setting(stage, role, partner, counterbalance, **feedback):   # feedb
         img_oppoFrame.setImage(image_frame_list[8+feedback['partner_idx']+4*(stage-1)])
         img_selfFrame.setPos(to_1024_768_2D(selfFramePosList[myKeyResponse-1][0], selfFramePosList[myKeyResponse-1][1])) 
         # if RunCommunication==0, oppo change pos
-        img_oppoFrame.setPos(to_1024_768_2D(oppoFramePosList[oppoKeyResponse-1+(feedback['RunCommunication']-1)][0], oppoFramePosList[oppoKeyResponse-1+(feedback['RunCommunication']-1)][1]))
+        # img_oppoFrame.setPos(to_1024_768_2D(oppoFramePosList[oppoKeyResponse-1+(feedback['RunCommunication']-1)][0], oppoFramePosList[oppoKeyResponse-1+(feedback['RunCommunication']-1)][1]))
         return oppoKeyResponse
 def assign_reward(data2_clients_list, role_idx, partner_idx, role, partner, counterbalance):
     oppoKeyResponse = int(data2_clients_list[partner_idx]['respondkeyp'+partner.lower()])
@@ -370,6 +370,23 @@ def draw_stimuli(components, time,t,frameN):
 #     frameRemains = 0.0 + int(time)- win.monitorFramePeriod * 0.75  # most of one frame period left
 #     if textSpace8.status == STARTED and t >= frameRemains:
 #         textSpace8.setAutoDraw(False)
+
+def get_field(my_idx, user_fields):
+    my_field_num = user_fields[my_idx]
+    field_list = []
+
+
+    if my_field_num <=4:
+        for idx, u in enumerate(user_fields):
+            if u <= 4 :
+                field_list.append(idx)
+    else:
+        for idx, u in enumerate(user_fields):
+            if u > 4 :
+                field_list.append(idx)
+
+    return field_list
+
 def trans(role, stage, subject_choice_key, counterbalance, group, partner):
     tra = {}
     # create subject_choice_key to choice ['X','Y'] dictionary
@@ -452,21 +469,21 @@ for r in range(runNum):
     psychopyVersion = '3.0.7'
     expName = 'hypercomm4p'
 
-    if runCount == 1:
-        # determine user automatically input Run or not
-        if expInfo['Pair/Run'].isdigit() == False:
-            pair = int(pair2num_dict[str(expInfo['Pair/Run']).lower()])
-            expInfo['Run'] = int(df.at[(pair - 1)*6 + runCount - 1,'PairRun'])
-            AutoRunInput = True
-        else:
-            pair = 'None'
-            expInfo['Run'] = expInfo['Pair/Run']
-            AutoRunInput = False
+    # if runCount == 1:
+    #     # determine user automatically input Run or not
+    #     if expInfo['Pair/Run'].isdigit() == False:
+    #         pair = int(pair2num_dict[str(expInfo['Pair/Run']).lower()])
+    #         expInfo['Run'] = int(df.at[(pair - 1)*6 + runCount - 1,'PairRun'])
+    #         AutoRunInput = True
+    #     else:
+    #         pair = 'None'
+    #         expInfo['Run'] = expInfo['Pair/Run']
+    #         AutoRunInput = False
 
-    if runCount > 1:
-        if AutoRunInput == True:
-            defaultRun = int(df.at[(pair - 1)*6 + runCount - 1,'PairRun'])
-            expInfo['Run']= defaultRun
+    # if runCount > 1:
+    #     if AutoRunInput == True:
+    #         defaultRun = int(df.at[(pair - 1)*6 + runCount - 1,'PairRun'])
+    #         expInfo['Run']= defaultRun
 
     dlg = gui.DlgFromDict(dictionary=expInfo, title=expName, sortKeys=False)
     if dlg.OK == False:
@@ -481,7 +498,7 @@ for r in range(runNum):
     
     currentRun = int(expInfo['Run'])
     runCount = currentRun 
-    currentTrial = (currentRun-1)*18
+    currentTrial = 0
     currentCommunication = (currentRun-1)*18
     expRun = 'Run' + str(expInfo['Run'])
     expDate= data.getDateStr(format="%Y%m%d")
@@ -1214,9 +1231,16 @@ for r in range(runNum):
         currentBlock += 1
         
         # each block the same
-        group_num_list = []
-        for c in range(10,14):
-            group_num_list.append(int(df.iloc[(currentBlock-1)*3+(currentRun-1)*18, c]))
+        user_fields = []
+        user_list = ['group_pa', 'group_pb', 'group_pc', 'group_pd', 'group_pe', 'group_pf', 'group_pg', 'group_ph']
+        user_idx_dict = {'A':0, 'B':1, 'C':2, 'D':3}
+        my_idx = user_idx_dict[clientID]
+        for u in user_list:
+            user_fields.append(df.at[currentTrial, u])
+        # print(user_fields)
+        # print(my_idx)
+        field_idx_list = []
+        field_idx_list = get_field(my_idx, user_fields)
 
         # assign subject's role in group
         for k in range(0, len(groupMember_dict)):
@@ -1225,9 +1249,12 @@ for r in range(runNum):
                 role = 'player' + str(d)
                 role_alphabet = str(d.lower())
                 role_idx = k
-                group_num = group_num_list[k]
-                partner_idx = [j for j, e in enumerate(group_num_list) if e == group_num and j != k][0]
-                partnerID = groupMember_dict[partner_idx]
+                # group_num = user_fields[k]
+                group_num = -1
+                # partner_idx = [j for j, e in enumerate(user_fields) if e == group_num and j != k][0]
+                partner_idx = 0
+                # partnerID = groupMember_dict[partner_idx]
+                partnerID = 'A'
                 if k < partner_idx:
                     order = 1
                 else:
@@ -1321,11 +1348,11 @@ for r in range(runNum):
             oops2 = False
 
             # read 'runset'
-            RunCommunication = int(df.at[currentCommunication - 1,'Communication'])
+            # RunCommunication = int(df.at[currentCommunication - 1,'Communication'])
             exc_stage1 = int(df.at[currentTrial - 1,'ExchangePos'])
             currentPayoff = df.at[currentTrial - 1,'Payoffmatrix']
-            currentOpponent = str(df.at[currentTrial - 1,'ComputerType'])
-            currentComputerC = str(df.at[currentTrial - 1,'ComputerChoice'])
+            currentOpponent = str(df.at[currentTrial - 1,'InteractionType'])
+            # currentComputerC = str(df.at[currentTrial - 1,'ComputerChoice'])
             # MRI ITI time
             if int(expInfo['FlagBehaviorExp']) != 1:
                 ITITime = int(df.at[currentTrial - 1,'ITItime'])
@@ -1345,7 +1372,8 @@ for r in range(runNum):
 
             # dertermine payoff matrix
             # coordinate game (e.g. C1/C9), player2 get C9
-            if order == 2 and int(currentPayoff[0][0][0]) != 0 and currentOpponent == 'H' and exc_stage1 == 0:
+            # if order == 2 and int(currentPayoff[0][0][0]) != 0 and currentOpponent == 'H' and exc_stage1 == 0:
+            if order == 2 and int(currentPayoff[0][0][0]) != 0 and exc_stage1 == 0:
                 space1 = currentPayoff[0][0][1]
                 space2 = currentPayoff[0][0][0]
                 space3 = currentPayoff[0][1][1]
@@ -1355,7 +1383,8 @@ for r in range(runNum):
                 space7 = currentPayoff[1][1][1]
                 space8 = currentPayoff[1][1][0]
             # counterbalance
-            elif order == 2 and int(currentPayoff[0][0][0]) != 0 and currentOpponent == 'H' and exc_stage1 == 1:
+            # elif order == 2 and int(currentPayoff[0][0][0]) != 0 and currentOpponent == 'H' and exc_stage1 == 1:
+            elif order == 2 and int(currentPayoff[0][0][0]) != 0 and exc_stage1 == 1:
                 space1 = currentPayoff[0][1][1]
                 space2 = currentPayoff[0][1][0]
                 space3 = currentPayoff[0][0][1]
@@ -1703,7 +1732,7 @@ for r in range(runNum):
                     choiceList_fb1 = ['1', '2']
 
                     # trans(role, stage, subject_choice_key, counterbalance, group, partner)
-                    data_clients_list.append(trans(r, 1, choiceList_fb1[int((currentTrial - 1 ) % 2)], 0, group_num_list[k], groupMember_dict[[j for j, e in enumerate(group_num_list) if e == group_num_list[k] and j != k][0]]))
+                    data_clients_list.append(trans(r, 1, choiceList_fb1[int((currentTrial - 1 ) % 2)], 0, user_fields[k], groupMember_dict[[j for j, e in enumerate(user_fields) if e == user_fields[k] and j != k][0]]))
 
                 # replace with data_clients while it's online version
                 if PracticeFlag == False:
@@ -1720,7 +1749,7 @@ for r in range(runNum):
                 else:
                     data_clients_list[role_idx] = trans(role_alphabet, 1, subject_choice_key, exc_stage1, group_num, partnerID)
 
-                partner_stage1_choice = stimuli_setting(1, role_alphabet, partnerID, exc_stage1, role_idx=role_idx, partner_idx=partner_idx, RunCommunication=RunCommunication)
+                partner_stage1_choice = stimuli_setting(1, role_alphabet, partnerID, exc_stage1, role_idx=role_idx, partner_idx=partner_idx)
 
             # keep track of which components have finished
             FB1Components = [img_selfFrame, img_oppoFrame, img_PayoffMatrix, textPartner, textYou, textX, textY, textSuccessRate, textSpace1, textSpace2, textSpace3, textSpace4, textSpace5, textSpace6, textSpace7, textSpace8]
@@ -2166,7 +2195,7 @@ for r in range(runNum):
                     r = groupMember_dict[k].lower()
                     choiceList_fb2 = ['1', '2']
                     # trans(role, stage, subject_choice_key, counterbalance, group, partner)
-                    data2_clients_list.append(trans(r, 2, choiceList_fb2[int((currentTrial - 1 ) % 2)], 0, group_num_list[k], groupMember_dict[[j for j, e in enumerate(group_num_list) if e == group_num_list[k] and j != k][0]]))
+                    data2_clients_list.append(trans(r, 2, choiceList_fb2[int((currentTrial - 1 ) % 2)], 0, user_fields[k], groupMember_dict[[j for j, e in enumerate(user_fields) if e == user_fields[k] and j != k][0]]))
                 
                # replace with data2_clients while it's online version
                 if PracticeFlag == False:
@@ -2183,7 +2212,7 @@ for r in range(runNum):
                 else:
                     data2_clients_list[role_idx] = trans(role_alphabet, 2, subject_choiceS2_key, exc_stage1, group_num, partnerID)
 
-                partner_stage2_choice = stimuli_setting(2, role_alphabet, partnerID, exc_stage1, role_idx=role_idx, partner_idx=partner_idx, RunCommunication=1) # no failed commu in stage2
+                partner_stage2_choice = stimuli_setting(2, role_alphabet, partnerID, exc_stage1, role_idx=role_idx, partner_idx=partner_idx) # no failed commu in stage2
 
                 # assign_reward(data2_clients_list, role_idx, partner_idx, role, partner, counterbalance):
                 reward = assign_reward(data2_clients_list, role_idx, partner_idx, role_alphabet, partnerID, exc_stage1)[0]
@@ -2372,7 +2401,7 @@ for r in range(runNum):
             trials.addData('ITIEnd',ITIEnd)
             trials.addData('ExpectEndTime',ExpectTime+ITITime)
             trials.addData('player',role)
-            trials.addData('sequence',pair)
+            # trials.addData('sequence',pair)
             trials.addData('currentRun',currentRun)
             trials.addData('currentTrial',currentTrial)
             trials.addData('counterbalance',exc_stage1)
