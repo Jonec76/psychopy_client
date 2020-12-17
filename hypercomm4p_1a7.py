@@ -390,16 +390,16 @@ def get_field(my_idx, user_fields):
 def trans(role, stage, subject_choice_key, counterbalance, group, partner):
     tra = {}
     # create subject_choice_key to choice ['X','Y'] dictionary
-    choices_dict     = {'1' : choiceList[0], '2' : choiceList[1], 10000 : 'Missed'}
-    choices_exc_dict = {'1' : choiceList[1], '2' : choiceList[0], 10000 : 'Missed'}
+    choices_dict     = {'1' : choice_nums[0], '2' : choice_nums[1], '3' : choice_nums[2],  '4' : choice_nums[3], 10000 : 'Missed'}
+    # choices_exc_dict = {'1' : choiceList[1], '2' : choiceList[0], 10000 : 'Missed'}
 
-    if counterbalance == 0:
-        choice = str(choices_dict[subject_choice_key])
-    else:
-        choice = str(choices_exc_dict[subject_choice_key])
+    # if counterbalance == 0:
+    #     choice = str(choices_dict[subject_choice_key])
+    # else:
+    #     choice = str(choices_exc_dict[subject_choice_key])
 
     tra['trialp'+role] = currentTrial
-    tra['p'+role] = choice
+    tra['p'+role] = choices_dict[subject_choice_key]
     tra['stagep'+role] = stage
     tra['groupp'+role] = 1
     tra['group'+role] = 1
@@ -906,7 +906,7 @@ for r in range(runNum):
     frameN = -1
     continueRoutine = True
     #    ===================(remove)
-    continueRoutine = False
+    # continueRoutine = False
     #    ===================
     
     
@@ -1349,6 +1349,15 @@ for r in range(runNum):
 
             # read 'runset'
             # RunCommunication = int(df.at[currentCommunication - 1,'Communication'])
+
+            computer_choice_title = [('S1_choice_pe', 'S2_choice_pe'), ('S1_choice_pf', 'S2_choice_pf'), ('S1_choice_pg', 'S2_choice_pg'), ('S1_choice_ph', 'S2_choice_ph')]
+            computer_choice = []
+            
+            for t in computer_choice_title:
+                s1 = df.at[currentTrial - 1,t[0]] 
+                s2 = df.at[currentTrial - 1,t[1]] 
+                computer_choice.append((s1, s2))
+
             exc_stage1 = int(df.at[currentTrial - 1,'ExchangePos'])
             currentPayoff = df.at[currentTrial - 1,'Payoffmatrix']
             currentOpponent = str(df.at[currentTrial - 1,'InteractionType'])
@@ -1622,7 +1631,7 @@ for r in range(runNum):
                         data_clients = json.loads(message_ret_data[idx:])
                     else:
                         data_clients = json.loads(message_ret_data)
-
+                # print(data_clients)
                 # check whether someone missed
                 for k in range(len(data_clients)):
                     if data_clients[k][str(list(data_clients[k].keys())[1])] == 'Missed':
@@ -1732,7 +1741,7 @@ for r in range(runNum):
                     choiceList_fb1 = ['1', '2']
 
                     # trans(role, stage, subject_choice_key, counterbalance, group, partner)
-                    data_clients_list.append(trans(r, 1, choiceList_fb1[int((currentTrial - 1 ) % 2)], 0, user_fields[k], groupMember_dict[[j for j, e in enumerate(user_fields) if e == user_fields[k] and j != k][0]]))
+                    data_clients_list.append(trans(r, 1, '1', 0, 0, 0))
 
                 # replace with data_clients while it's online version
                 if PracticeFlag == False:
