@@ -223,7 +223,9 @@ def stimuli_setting(stage, role, partner, counterbalance, **feedback):   # feedb
         data_list_list = [data_clients_list, data2_clients_list]
         computer_idx = 4
         for c in computer_choice:
-            data_list_list[stage-1].append({user_name_table[computer_idx]:c})
+            s1_choice = int(c[0]) - 1
+            s2_choice = int(c[1]) - 1
+            data_list_list[stage-1].append({user_name_table[computer_idx]:{"s1":choice_nums[s1_choice], "s2":choice_nums[s2_choice]}})
             computer_idx += 1
         for pair in field_pair_list:
             field = int(pair[0])
@@ -276,38 +278,62 @@ def draw_components(x,time,t,frameN, show):
 def draw_stimuli(components, time,t,frameN):
 	for c in components:
 		draw_components(c,time,t,frameN, True)
-def set_all_user_pos(field_choice_pair, my_field, my_icon, partner_icon, op1_icon, op2_icon, my_dir):
+def set_all_user_pos(stage, field_choice_pair, my_field, u1_icon, u2_icon, op1_icon, op2_icon, my_dir):
     my_field = int(my_field)
     if my_field & 1 == 1:
         partner_field = my_field +1
     else:
         partner_field = my_field -1
-
-    tmp_field_choice_pair = field_choice_pair
     
-    for p in tmp_field_choice_pair:
-        # Unpacking with *
-        # support python>=3.5 for find key
-        if [*p][0] == my_field:
-            my_choice = p[my_field] 
-        if [*p][0] == partner_field:
-            partner_choice = p[partner_field]
-    
-    my_def = str(my_choice[1])
-    partner_def = str(partner_choice[1])
-
     if my_dir == left_dir:
         my_payoff_nums = payoff_nums[0:4]
         my_num_pos = small_num_pos[0:4]
+        opp_payoff_nums = payoff_nums[4:8]
+        opp_num_pos = small_num_pos[4:8]
+
     else:
         my_payoff_nums = payoff_nums[4:8]
         my_num_pos = small_num_pos[4:8]
+        opp_payoff_nums = payoff_nums[0:4]
+        opp_num_pos = small_num_pos[0:4]
+    print(field_choice_pair)
+    for p in field_choice_pair:
+        # Unpacking with *
+        # support python>=3.5 for find key
+        key = [*p][0]
+        
+        if type(p[key]) is dict:
+            # It means this choice p is made by computer
+            defend_value = str(int(p[key][stage][1]))
+        else:
+            # This choice p is made by user
+            defend_value = str(int(p[key][1]))
+        
+        if key == 1 or key == 5:
+            u1_def = defend_value
+            u1_def = my_payoff_nums.index(u1_def)
+        if key == 2 or key == 6:
+            u2_def = defend_value
+            u2_def = my_payoff_nums.index(u2_def)
+        if key == 3 or key == 7:
+            op1_def = defend_value
+            op1_def = opp_payoff_nums.index(op1_def)
+        if key == 4 or key == 8:
+            op2_def = defend_value
+            op2_def = opp_payoff_nums.index(op2_def)
 
-    my_def = my_payoff_nums.index(my_def)
-    my_icon.pos = my_num_pos[my_def]
 
-    partner_def = my_payoff_nums.index(partner_def)
-    partner_icon.pos = my_num_pos[partner_def]
+    # # my_def = str(my_choice[1])
+    # # my_def = my_payoff_nums.index(my_def)
+    # # partner_def = str(partner_choice[1])
+
+    u1_icon.pos = my_num_pos[u1_def]
+    u2_icon.pos = my_num_pos[u2_def]
+    op1_icon.pos = opp_num_pos[op1_def]
+    op2_icon.pos = opp_num_pos[op2_def]
+
+    # partner_def = my_payoff_nums.index(partner_def)
+    # u2_icon.pos = my_num_pos[partner_def]
 
 # def draw_stimuli(time):
 #     for c in choices_stimulis:
@@ -680,7 +706,7 @@ for r in range(runNum):
         texRes=1024, interpolate=True, depth=0.0)
     
     image_PayoffMatrix_list = ['../new_images/Payoff Matrix_S1.png', '../images/Payoff Matrix_S2.png']
-    text_depth = -3
+    text_depth = -5
     textSpace1 = visual.TextStim(win=win, name='textSpace1',
         text='default text',
         font='Arial',
@@ -887,38 +913,38 @@ for r in range(runNum):
         flipHoriz=False, flipVert=False,
         texRes=1024, interpolate=True, depth=-3)
     
-    my_icon = visual.ImageStim(
+    u1_icon = visual.ImageStim(
         win=win,
         name='my_icon', 
         image='../new_images/G1_1.png', mask=None,
-        ori=0, pos=to_1024_768_2D(0.035, -0.029), size=to_1024_768_2D(0.07, 0.07),
+        ori=0, pos=to_1024_768_2D(0.035, -0.029), size=to_1024_768_2D(0.08, 0.08),
         color=[1,1,1], colorSpace='rgb', opacity=1,
         flipHoriz=False, flipVert=False,
-        texRes=1024, interpolate=True, depth=-1)
-    partner_icon = visual.ImageStim(
+        texRes=1024, interpolate=True, depth=-3)
+    u2_icon = visual.ImageStim(
         win=win,
         name='partner_icon', 
         image='../new_images/G1_2.png', mask=None,
         ori=0, pos=to_1024_768_2D(0.035, -0.029), size=to_1024_768_2D(0.1, 0.1),
         color=[1,1,1], colorSpace='rgb', opacity=1,
         flipHoriz=False, flipVert=False,
-        texRes=1024, interpolate=True, depth=-1)
+        texRes=1024, interpolate=True, depth=-2)
     op1_icon = visual.ImageStim(
         win=win,
         name='op1_icon', 
-        image='sin', mask=None,
-        ori=0, pos=to_1024_768_2D(0.035, -0.029), size=to_1024_768_2D(0.33, 0.72),
+        image='../new_images/G2_1.png', mask=None,
+        ori=0, pos=to_1024_768_2D(0.035, -0.029), size=to_1024_768_2D(0.08, 0.08),
         color=[1,1,1], colorSpace='rgb', opacity=1,
         flipHoriz=False, flipVert=False,
-        texRes=1024, interpolate=True, depth=-1)
+        texRes=1024, interpolate=True, depth=-3)
     op2_icon = visual.ImageStim(
         win=win,
         name='op2_icon', 
-        image='sin', mask=None,
-        ori=0, pos=to_1024_768_2D(0.035, -0.029), size=to_1024_768_2D(0.33, 0.72),
+        image='../new_images/G2_2.png', mask=None,
+        ori=0, pos=to_1024_768_2D(0.035, -0.029), size=to_1024_768_2D(0.1, 0.1),
         color=[1,1,1], colorSpace='rgb', opacity=1,
         flipHoriz=False, flipVert=False,
-        texRes=1024, interpolate=True, depth=-1)
+        texRes=1024, interpolate=True, depth=-2)
         
     # Initialize components for Routine "IStageI"
     IStageIClock = core.Clock()
@@ -1112,62 +1138,62 @@ for r in range(runNum):
 
     # wait for 5 sec
     # ------Prepare to start Routine "countDown"-------
-    t = 0
-    countDownClock.reset()  # clock
-    frameN = -1
-    continueRoutine = True
-    routineTimer.add(5.000000)
-    # update component parameters for each repeat
-    countT = 1
-    # keep track of which components have finished
-    countDownComponents = [textCountDown]
-    for thisComponent in countDownComponents:
-        if hasattr(thisComponent, 'status'):
-            thisComponent.status = NOT_STARTED
+    # t = 0
+    # countDownClock.reset()  # clock
+    # frameN = -1
+    # continueRoutine = True
+    # routineTimer.add(5.000000)
+    # # update component parameters for each repeat
+    # countT = 1
+    # # keep track of which components have finished
+    # countDownComponents = [textCountDown]
+    # for thisComponent in countDownComponents:
+    #     if hasattr(thisComponent, 'status'):
+    #         thisComponent.status = NOT_STARTED
     
-    # -------Start Routine "countDown"-------(close)
-    while continueRoutine and routineTimer.getTime() > 0:
-        # get current time
-        t = countDownClock.getTime()
-        frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-        # update/draw components on each frame
+    # # -------Start Routine "countDown"-------(close)
+    # while continueRoutine and routineTimer.getTime() > 0:
+    #     # get current time
+    #     t = countDownClock.getTime()
+    #     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+    #     # update/draw components on each frame
         
-        # *textCountDown* updates
-        if t >= 0.0 and textCountDown.status == NOT_STARTED:
-            # keep track of start time/frame for later
-            textCountDown.tStart = t
-            textCountDown.frameNStart = frameN  # exact frame index
-            textCountDown.setAutoDraw(True)
-        frameRemains = 0.0 + 5- win.monitorFramePeriod * 0.75  # most of one frame period left
-        if textCountDown.status == STARTED and t >= frameRemains:
-            textCountDown.setAutoDraw(False)
-        if textCountDown.status == STARTED:  # only update if drawing
-            textCountDown.setText(countT, log=False)
+    #     # *textCountDown* updates
+    #     if t >= 0.0 and textCountDown.status == NOT_STARTED:
+    #         # keep track of start time/frame for later
+    #         textCountDown.tStart = t
+    #         textCountDown.frameNStart = frameN  # exact frame index
+    #         textCountDown.setAutoDraw(True)
+    #     frameRemains = 0.0 + 5- win.monitorFramePeriod * 0.75  # most of one frame period left
+    #     if textCountDown.status == STARTED and t >= frameRemains:
+    #         textCountDown.setAutoDraw(False)
+    #     if textCountDown.status == STARTED:  # only update if drawing
+    #         textCountDown.setText(countT, log=False)
 
-        time.sleep(0.9)
-        countT -= 1
+    #     time.sleep(0.9)
+    #     countT -= 1
         
-        # check for quit (typically the Esc key)
-        if endExpNow or event.getKeys(keyList=["escape"]):
-            core.quit()
+    #     # check for quit (typically the Esc key)
+    #     if endExpNow or event.getKeys(keyList=["escape"]):
+    #         core.quit()
         
-        # check if all components have finished
-        if not continueRoutine:  # a component has requested a forced-end of Routine
-            break
-        continueRoutine = False  # will revert to True if at least one component still running
-        for thisComponent in countDownComponents:
-            if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                continueRoutine = True
-                break  # at least one component has not yet finished
+    #     # check if all components have finished
+    #     if not continueRoutine:  # a component has requested a forced-end of Routine
+    #         break
+    #     continueRoutine = False  # will revert to True if at least one component still running
+    #     for thisComponent in countDownComponents:
+    #         if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+    #             continueRoutine = True
+    #             break  # at least one component has not yet finished
         
-        # refresh the screen
-        if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-            win.flip()  
+    #     # refresh the screen
+    #     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
+    #         win.flip()  
     
-    # -------Ending Routine "countDown"-------
-    for thisComponent in countDownComponents:
-        if hasattr(thisComponent, "setAutoDraw"):
-            thisComponent.setAutoDraw(False)
+    # # -------Ending Routine "countDown"-------
+    # for thisComponent in countDownComponents:
+    #     if hasattr(thisComponent, "setAutoDraw"):
+    #         thisComponent.setAutoDraw(False)
 
     if PracticeFlag == False:
 
@@ -1652,7 +1678,7 @@ for r in range(runNum):
             message_ret_data = []
 
             # ==================
-            # waitT = 7
+            waitT = 7
             # ==================
 
 
@@ -1714,7 +1740,7 @@ for r in range(runNum):
 
             ### For debug
             ### Directly assign the value to socket data
-            # message_ret_data = '[{"trialpa": 1, "pa": [2, 8], "stagepa": 1, "grouppa": 1, "groupa": 1, "partnerpa": "A", "respondkeypa": "1"}, {"trialpb": 1, "pb": [4, 6], "stagepb": 1, "grouppb": 1, "groupb": 1, "partnerpb": "A", "respondkeypb": "2"}, {"trialpc": 1, "pc": [6, 4], "stagepc": 1, "grouppc": 1, "groupc": 1, "partnerpc": "A", "respondkeypc": "3"}, {"trialpd": 1, "pd": [8, 6], "stagepd": 1, "grouppd": 1, "groupd": 1, "partnerpd": "A", "respondkeypd": "4"}]'
+            message_ret_data = '[{"trialpa": 1, "pa": [2, 8], "stagepa": 1, "grouppa": 1, "groupa": 1, "partnerpa": "A", "respondkeypa": "1"}, {"trialpb": 1, "pb": [4, 6], "stagepb": 1, "grouppb": 1, "groupb": 1, "partnerpb": "A", "respondkeypb": "2"}, {"trialpc": 1, "pc": [6, 4], "stagepc": 1, "grouppc": 1, "groupc": 1, "partnerpc": "A", "respondkeypc": "3"}, {"trialpd": 1, "pd": [8, 6], "stagepd": 1, "grouppd": 1, "groupd": 1, "partnerpd": "A", "respondkeypd": "4"}]'
             
             whoMissed = ''
             if PracticeFlag == False:
@@ -1866,8 +1892,8 @@ for r in range(runNum):
             # print(field_choice_pair)
             # print(user_fields[my_idx])
 
-            set_all_user_pos(field_choice_pair, user_fields[my_idx], my_icon, partner_icon, op1_icon, op2_icon, my_dir)
-            FB1Components = [img_PayoffMatrix, my_icon, partner_icon]
+            set_all_user_pos('s1', field_choice_pair, user_fields[my_idx], u1_icon, u2_icon, op1_icon, op2_icon, my_dir)
+            FB1Components = [img_PayoffMatrix, u1_icon, u2_icon]
             
             # set text payoff
             for idx, t in enumerate(payoff_nums_stimulis):
